@@ -47,7 +47,7 @@ const typeDefs = `
     name: String!
     speakers: [Speaker]!
     sessions: [Session]!
-    schedule: [ScheduleItem]!
+    schedule: [ScheduleItem!]!
   }
 
   interface Event {
