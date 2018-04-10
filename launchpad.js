@@ -114,8 +114,12 @@ const { connectionType: sessionConnectionType } = connectionDefinitions({
 // Provide resolver function the node field
 const { nodeResolver } = nodeDefinitions(globalId => {
   const { type, id } = fromGlobalId(globalId);
+
+  let dataCollection = `${camelCase(type)}s`
+  if (type === 'ScheduleItem') dataCollection = 'schedule'
+
   return {
-    ...getData(confData)(`${camelCase(type)}s`).find(obj => obj.id === id),
+    ...getData(confData)(dataCollection).find(obj => obj.id === id),
     __type: type
   };
 });
