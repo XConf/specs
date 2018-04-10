@@ -48,6 +48,7 @@ const typeDefs = `
     speakers: [Speaker]!
     sessions: [Session]!
     schedule: [ScheduleItem!]!
+    scheduleItem(id: ID!): ScheduleItem
   }
 
   interface Event {
@@ -161,7 +162,11 @@ const resolvers = {
     // sessions: (root, args) => connectionFromArray(data.sessions, args)
   },
   Conference: {
-    id: globalIdResolver()
+    id: globalIdResolver(),
+    scheduleItem: (root, args) => {
+      const { id } = fromGlobalId(args.id);
+      return getData(confData)('schedule').find(o => o.id === id);
+    }
   },
   Event: {
     __resolveType: obj => obj.speakerId ? 'Session' : 'Activity'
