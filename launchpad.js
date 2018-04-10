@@ -55,6 +55,11 @@ const typeDefs = `
     title: String!
   }
 
+  type EventInterface {
+    session: Session
+    activity: Activity
+  }
+
   type Session implements Node, Event {
     id: ID!
     title: String!
@@ -89,6 +94,7 @@ const typeDefs = `
     timePeriods: [TimePeriod]!
     timePeriodIds: [ID]!
     event: Event!
+    eventInterface: EventInterface!
   }
 
   type Location implements Node {
@@ -169,7 +175,7 @@ const resolvers = {
     }
   },
   Event: {
-    __resolveType: obj => obj.speakerId ? 'Session' : 'Activity'
+    __resolveType: obj => (obj.speakerId ? 'Session' : 'Activity')
   },
   Session: {
     id: globalIdResolver(),
@@ -190,6 +196,14 @@ const resolvers = {
         return obj.event
       } else if (obj.eventSessionId) {
         return getData(confData)('sessions').find(o => o.id === obj.eventSessionId)
+      }
+    },
+    eventInterface: (obj) => {
+      if (obj.event) {
+        return { activity: obj.event }
+      } else if (obj.eventSessionId) {
+        const session = getData(confData)('sessions').find(o => o.id === obj.eventSessionId)
+        return { session }
       }
     }
   },
