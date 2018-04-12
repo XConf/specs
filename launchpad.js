@@ -37,6 +37,7 @@ const typeDefs = `
   type Query {
     ${nodeField}
     conference(code: String!): Conference
+    scheduleItem(id: ID!): ScheduleItem
     speakers${connectionArgs()}: SpeakerConnection
     sessions${connectionArgs()}: SessionConnection
   }
@@ -48,7 +49,6 @@ const typeDefs = `
     speakers: [Speaker]!
     sessions: [Session]!
     schedule: [ScheduleItem!]!
-    scheduleItem(id: ID!): ScheduleItem
   }
 
   interface Event {
@@ -163,16 +163,16 @@ const resolvers = {
   Query: {
     node: nodeResolver,
     conference: (root, args) => confData[args.code],
+    scheduleItem: (root, args) => {
+      const { id } = fromGlobalId(args.id);
+      return getData(confData)('schedule').find(o => o.id === id);
+    }
     // schedule: (root, args) => data.schedule[args.year],
     // speakers: (root, args) => connectionFromArray(data.speakers, args),
     // sessions: (root, args) => connectionFromArray(data.sessions, args)
   },
   Conference: {
-    id: globalIdResolver(),
-    scheduleItem: (root, args) => {
-      const { id } = fromGlobalId(args.id);
-      return getData(confData)('schedule').find(o => o.id === id);
-    }
+    id: globalIdResolver()
   },
   Event: {
     __resolveType: obj => (obj.speakerId ? 'Session' : 'Activity')
