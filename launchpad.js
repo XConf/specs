@@ -95,11 +95,15 @@ const typeDefs = `
     githubUsername: String
   }
 
+  input ConferenceDateInput {
+    id: ID
+  }
+
   type Schedule {
     dates: [ConferenceDate!]!
-    periods(dateID: ID): [Period!]!
+    periods(date: ConferenceDateInput): [Period!]!
     places: [Place!]!
-    items(dateID: ID): [ScheduleItem!]!
+    items(date: ConferenceDateInput): [ScheduleItem!]!
   }
 
   type ScheduleItem implements Node {
@@ -209,8 +213,22 @@ const resolvers = {
     id: globalIdResolver()
   },
   Schedule: {
-    // TODO: Implement filter periods and items by dateID
-    items: obj => obj.schedule
+    items: (obj, args) => {
+      if (args.date && args.date.id) {
+        const { id } = fromGlobalId(args.date.id);
+        const periods = obj.periods.filter(o => o.dateId === id);
+        const periodIds = periods.map(o => o.id);
+        return obj.schedule.filter(s => s.periodIds.filter(periodId => periodIds.includes(periodId)).length > 0);
+      }
+      return obj.schedule
+    },
+    periods: (obj, args) => {
+      if (args.date && args.date.id) {
+        const { id } = fromGlobalId(args.date.id);
+        return obj.periods.filter(o => o.dateId === id)
+      }
+      return obj.periods
+    },
   },
   ScheduleItem: {
     id: globalIdResolver(),
