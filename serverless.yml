@@ -20,3 +20,7 @@ functions:
     handler: graphql
     events:
       - http: path
+  graphiql:
+    handler: graphiql
+    events:
+      - http: path
