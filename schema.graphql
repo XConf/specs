@@ -1,0 +1,123 @@
+scalar DatetimeWithZone
+scalar URL
+
+enum Language {
+  EN
+  ZH_TW
+}
+
+type Query {
+  node(id: ID!): Node
+  conference(code: String!): Conference
+  scheduleItem(id: ID!): ScheduleItem
+  speakers(first: Int, after: String, last: Int, before: String): SpeakerConnection
+  sessions(first: Int, after: String, last: Int, before: String): SessionConnection
+}
+
+type Conference implements Node {
+  id: ID!
+  code: String!
+  name: String!
+  keyVisionUrl: URL!
+  dates: [ConferenceDate!]!
+  location: ConferenceLocation!
+  wifiNetwork: ConferenceWifiNetwork!
+  speakers: [Speaker!]!
+  sessions: [Session!]!
+  schedule: Schedule!
+}
+
+type ConferenceDate implements Node {
+  id: ID!
+  name: String!
+  date: String!
+}
+
+type ConferenceLocation {
+  name: String!
+  address: String!
+}
+
+type ConferenceWifiNetwork {
+  ssid: String!
+  password: String!
+}
+
+interface Event {
+  id: ID!
+  title: String!
+}
+
+type EventInterface {
+  session: Session
+  activity: Activity
+}
+
+type Session implements Node & Event {
+  id: ID!
+  title: String!
+  description: String!
+  speaker: Speaker!
+  speakerId: ID!
+  language: Language!
+  tags: [SessionTag!]!
+  tagIds: [ID!]!
+  slideUrl: String
+  videoUrl: String
+}
+
+type SessionTag implements Node {
+  id: ID!
+  name: String!
+}
+
+type Activity implements Node & Event {
+  id: ID!
+  title: String!
+}
+
+type Speaker implements Node {
+  id: ID!
+  name: String!
+  title: String
+  pictureUrl: URL!
+  bio: String
+  homepageUrl: URL
+  twitterUsername: String
+  githubUsername: String
+}
+
+input ConferenceDateInput {
+  id: ID
+}
+
+type Schedule {
+  dates: [ConferenceDate!]!
+  periods(date: ConferenceDateInput): [Period!]!
+  places: [Place!]!
+  items(date: ConferenceDateInput): [ScheduleItem!]!
+}
+
+type ScheduleItem implements Node {
+  id: ID!
+  date: ConferenceDate!
+  places: [Place!]!
+  placeIds: [ID!]!
+  periods: [Period!]!
+  periodIds: [ID!]!
+  event: Event!
+  eventInterface: EventInterface!
+}
+
+type Place implements Node {
+  id: ID!
+  name: String!
+  mapImageUrl: URL
+}
+
+type Period implements Node {
+  id: ID!
+  date: ConferenceDate!
+  start: DatetimeWithZone!
+  end: DatetimeWithZone!
+}
