@@ -1,3 +1,11 @@
+// Shims
+
+const values = require('object.values');
+
+if (!Object.values) {
+  values.shim();
+}
+
 // Tool to combines a schema string with resolvers
 const { makeExecutableSchema } = require('graphql-tools');
 
