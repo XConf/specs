@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "6.11.5"
+cache:
+  yarn: true
+  directories:
+    - "node_modules"
+before_install:
+  - '[ ! -z "$GCLOUD_KEYFILE_BASE64" ] && mkdir -p ~/.gcloud && echo "$GCLOUD_KEYFILE_BASE64" | base64 --decode > ~/.gcloud/XConf-keyfile.json || :'
+install:
+  - yarn install
+script:
+  - yarn test
+  - '[ "$TRAVIS_BRANCH" == "master" ] && [ ! -z "$GCLOUD_KEYFILE_BASE64" ] && yarn run deploy || :'
