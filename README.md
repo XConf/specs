@@ -1,5 +1,7 @@
 # Specs
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/XConf/specs.svg)](https://greenkeeper.io/)
+
 Specifications of XConf.
 
 ## GraphQL Schema
