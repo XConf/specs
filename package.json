@@ -29,6 +29,6 @@
     "serverless-google-cloudfunctions": "^1.1.1"
   },
   "devDependencies": {
-    "eslint-config-airbnb": "^16.1.0"
+    "eslint-config-airbnb": "^18.0.1"
   }
 }
