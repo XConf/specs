@@ -25,7 +25,7 @@
     "graphql-relay-tools": "^0.1.1",
     "graphql-tools": "^3.0.0",
     "object.values": "^1.0.4",
-    "serverless": "^1.26.1",
+    "serverless": "^1.52.2",
     "serverless-google-cloudfunctions": "^1.1.1"
   },
   "devDependencies": {
